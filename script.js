@@ -1,3 +1,12 @@
+class PerfilSocioeconomico {
+    constructor() {
+        this.title = '';
+        this.xValues = [];
+        this.yValues = [];
+    }
+}
+
+let barColors = [];
 
 function uploadfile() {
     Papa.parse(document.getElementById('uploadfile').files[0],
@@ -6,22 +15,42 @@ function uploadfile() {
             header: true,
             skipEmptyLines: true,
             complete: function (results) {
-                console.log(results)
+                console.log('Resultado do CSV', results)
                 readData(results)
             }
         })
 }
 
-function readData(infoCsv) {
+function readData(linhasCsv) {
+    let listaResultado = [];
+    const colunasCsv = Object.keys(linhasCsv.data[0]);
 
-    const csvKeys = Object.keys(infoCsv.data[0]);
+    colunasCsv.forEach((coluna) => {
+        listaResultado.push(
+            {
+                title: coluna,
+                xValues: [],
+                yValues: [],
+            }
+        )
+    });
 
-    infoCsv.data.forEach(data => {
-        csvKeys.forEach(key => {
-            console.log(data[key])
-        });
-    })
+    linhasCsv.data.forEach((linha) => {
+        for (let i = 0; i < colunasCsv.length; i++) {
+            listaResultado[i].xValues.push(linha[colunasCsv[i]]);
+        }
+    });
 
+    listaResultado.forEach((itemResultado) => {
+        let valoresGrafico = compararValoresGrafico(itemResultado.xValues);
+        itemResultado.xValues = Object.keys(valoresGrafico);
+        itemResultado.yValues = Object.values(valoresGrafico);
+    });
+    console.log(listaResultado)
 }
 
-
+function compararValoresGrafico(array) {
+    return array.reduce((accumulator, value) => {
+        return Object.assign(Object.assign({}, accumulator), { [value]: (accumulator[value] || 0) + 1 });
+    }, {});
+}
