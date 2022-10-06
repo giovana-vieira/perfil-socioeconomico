@@ -6,8 +6,6 @@ class PerfilSocioeconomico {
     }
 }
 
-let barColors = [];
-
 function uploadfile() {
     Papa.parse(document.getElementById('uploadfile').files[0],
         {
@@ -47,10 +45,52 @@ function readData(linhasCsv) {
         itemResultado.yValues = Object.values(valoresGrafico);
     });
     console.log(listaResultado)
+
 }
 
 function compararValoresGrafico(array) {
     return array.reduce((accumulator, value) => {
         return Object.assign(Object.assign({}, accumulator), { [value]: (accumulator[value] || 0) + 1 });
     }, {});
+}
+
+function criarGrafico() {
+
+    for (let i = 0; i < listaResultado.length; i++) {
+
+        let xValues = [];
+        let yValues = [];
+        let barColors = [
+            "rgba(255,0,0,1.0)",
+            "rgba(255,0,0,0.8)",
+            "rgba(255,0,0,0.6)",
+            "rgba(255,0,0,0.4)",
+            "rgba(255,0,0,0.2)"
+        ];
+
+        new Chart("myChart", {
+            type: "bar",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                }]
+            },
+            options: {
+                legend: { display: false },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }],
+                },
+                title: {
+                    display: true,
+                    text: [title]
+                }
+            }
+        });
+    }
 }
