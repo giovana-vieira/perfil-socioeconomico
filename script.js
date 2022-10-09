@@ -59,6 +59,8 @@ let barColors = [
 
 let listaResultado = [];
 
+let wordCloud = [];
+
 // realiza a leitura do arquivo .csv atraves da biblioteca do papa.parse
 function uploadfile() {
     Papa.parse(document.getElementById('uploadfile').files[0],
@@ -91,6 +93,10 @@ function readData(linhasCsv) {
 
     linhasCsv.data.forEach((linha) => {
         for (let i = 0; i < colunasCsv.length; i++) {
+            // dentro desse if vamos pegar as informações para depois montar a nuvem de palavras
+            if (listaResultado[i].title.includes('Escreva algumas linhas sobre sua história e seus sonhos de vida')) {
+                wordCloud.push(linha[colunasCsv[i]]); // adiciona os dados no vetor de 'nuvem de palavras'
+            }
             listaResultado[i].xValues.push(linha[colunasCsv[i]]);
         }
     });
@@ -101,6 +107,8 @@ function readData(linhasCsv) {
         itemResultado.yValues = Object.values(valoresGrafico);
     });
     console.log(listaResultado)
+
+    createWordCloud(); // faz a chamada para criação da nuvem de palavras
 
     createOptionsSelect(listaResultado);
 
@@ -171,5 +179,59 @@ function criarGrafico() {
     });
 
     console.log(myChart)
+
+}
+
+
+// criação da nuvem de palavras
+function createWordCloud() {
+
+    // recupera e armazena as respostas em apenas uma string
+    // dessa forma ficou mais facil de trabalhar com a separação das palavras
+    let todasRespostas = '';
+    for (let i = 0; i < wordCloud.length; i++) {
+        // replaceAll para remover caracteres especiais
+        wordCloud[i] = wordCloud[i].replaceAll(',', ' ');
+        wordCloud[i] = wordCloud[i].replaceAll('.', ' ');
+        wordCloud[i] = wordCloud[i].replaceAll('(', ' ');
+        wordCloud[i] = wordCloud[i].replaceAll(')', ' ');
+        wordCloud[i] = wordCloud[i].replaceAll('/', ' ');
+        todasRespostas += `${' ' + wordCloud[i]}`;
+    }
+
+    // nesse trecho usamos o "split" do JS, para criar um vetor a partir do ' ' entre as palavras
+    // ja que no for acima deletamos os caracteres especiais
+    let vetorRespostas = todasRespostas.split(' ');
+
+    // esse for será para remover palavras que não serão utilizadas como por exemplo 'a', 'da', 'de'
+    for (let i = 0; i < vetorRespostas.length; i++) {
+        if (vetorRespostas[i].trim() === '') {
+            vetorRespostas.splice(i, 1);
+        } else if (vetorRespostas[i].trim().toUpperCase() === 'E') {
+            vetorRespostas.splice(i, 1);
+        } else if (vetorRespostas[i].trim().toUpperCase() === 'DE') {
+            vetorRespostas.splice(i, 1);
+        }
+    }
+
+    let resultado = compararValoresGrafico(vetorRespostas)
+
+    createListCloud(resultado);
+
+}
+
+function createListCloud(wordCloudResult) {
+
+    let ulWordCloud = document.getElementById('word-cloud');
+
+    const wordCloudKeys = Object.keys(wordCloudResult); // recupera as chaves como por exemplo "Familia", "Curso" e outras palavras
+
+    const wordCloudValues = Object.values(wordCloudResult); // recupera os valores, tipo 4,6,7
+
+    for (let i = 0; i < wordCloudKeys.length; i++) {
+        let li = document.createElement('li');
+        li.innerHTML = `<a href="#" style="--size: ${wordCloudValues[i]};">${wordCloudKeys[i]}</a>`;
+        ulWordCloud.appendChild(li);
+    }
 
 }
