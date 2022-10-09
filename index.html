@@ -4,28 +4,45 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> Ler planilha CSV </title>
+    <title> Perfil Socioeconômico </title>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <script src="script.js"> </script>
     <link rel="stylesheet" href="./styles.css">
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.png">
 </head>
 
 <body>
+    
+    <section class="titulo">
+        <h2> Perfil Socioeconômico </h2>
+    </section>
 
-    <input type="file" id="uploadfile" accept=".csv">
+    <section class="upload">
+        <div>
+            <h3>Upload de arquivo CSV</h3>
 
-    <button id="uploadconfirm" onClick="uploadfile()"> Upload File </button>
+            <input type="file" id="uploadfile" accept=".csv">
 
-    <div>
-        <label for="charts">Escolher Grafico:</label>
-        <select name="charts" id="idCharts" onchange="criarGrafico()"></select>
-    </div>
+            <button class="button button2" id="uploadconfirm" onClick="uploadfile()"> Enviar </button>
+        </div>
+    </section>
 
+    <section>
+        <div>
+            <h3>Visualização de gráficos</h3>
+
+            <label for="charts">Escolher Gráfico:</label>
+
+            <select name="charts" id="idCharts" onchange="criarGrafico()"></select>
+        </div>
+    </section>
+
+    <section>
     <canvas id="myChart"></canvas>
 
     <button onClick="criarGrafico()"> Criar Gráfico </button>
-
+    </section>
 </body>
 
 </html>
