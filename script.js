@@ -211,6 +211,56 @@ function createWordCloud() {
             vetorRespostas.splice(i, 1);
         } else if (vetorRespostas[i].trim().toUpperCase() === 'DE') {
             vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'NA') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'QUE') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'É') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'EU') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'MEU') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'A') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'O') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'DA') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'DO') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'EM') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'UM') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'UMA') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'MINHA') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'POR') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'OS') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'AS') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'NAS') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'ME') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'NO') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'TAMBÉM') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'PRA') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'PARA') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'COMO') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'COM') {
+            vetorRespostas.splice(i, 1);
+        }else if (vetorRespostas[i].trim().toUpperCase() === 'MEUS') {
+            vetorRespostas.splice(i, 1);
         }
     }
 
