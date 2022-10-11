@@ -61,8 +61,30 @@ let listaResultado = [];
 
 let wordCloud = [];
 
+// faz a limpeza das variaveis globais e do HTML ao clicar no botão de "Enviar"
+function clear() {
+
+    listaResultado = []; // limpa a variavel de lista resultado
+
+    wordCloud = []; // limpa a variavel de nuvem de palavras
+
+    // limpa o html de select, remove todas as options dele
+    let select = document.getElementById('idCharts');
+    while (select.options.length > 0) {
+        select.remove(0);
+    }
+
+    // limpa ali no html a nuvem de palavras
+    var myList = document.getElementById('word-cloud');
+    myList.innerHTML = '';
+
+}
+
 // realiza a leitura do arquivo .csv atraves da biblioteca do papa.parse
 function uploadfile() {
+
+    clear();
+
     Papa.parse(document.getElementById('uploadfile').files[0],
         {
             download: true,
@@ -72,7 +94,8 @@ function uploadfile() {
                 console.log('Resultado do CSV', results)
                 readData(results)
             }
-        })
+        }
+    )
 }
 
 // recebe os dados após a leitura pela biblioteca do papa.parse
@@ -106,12 +129,24 @@ function readData(linhasCsv) {
         itemResultado.xValues = Object.keys(valoresGrafico);
         itemResultado.yValues = Object.values(valoresGrafico);
     });
-    console.log(listaResultado)
+
+    removerItensListaResultado();
 
     createWordCloud(); // faz a chamada para criação da nuvem de palavras
 
-    createOptionsSelect(listaResultado);
+    createOptionsSelect();
 
+}
+
+function removerItensListaResultado() {
+    for (let i = 0; i < listaResultado.length; i++) {
+        if (
+            listaResultado[i].title.includes('Escreva algumas linhas sobre sua história e seus sonhos de vida') ||
+            listaResultado[i].title.includes('Carimbo')
+        ) {
+            listaResultado.splice(i, 1);
+        }
+    }
 }
 
 // organiza os valores por quantidade de repetição, por exemplo:::
@@ -124,7 +159,7 @@ function compararValoresGrafico(array) {
 }
 
 // recupara os dados do 'listaResultado' para montar as 'options' do 'select' no HTML
-function createOptionsSelect(listaResultado) {
+function createOptionsSelect() {
 
     let select = document.getElementById('idCharts');
 
@@ -182,7 +217,6 @@ function criarGrafico() {
 
 }
 
-
 // criação da nuvem de palavras
 function createWordCloud() {
 
@@ -196,7 +230,8 @@ function createWordCloud() {
         wordCloud[i] = wordCloud[i].replaceAll('(', ' ');
         wordCloud[i] = wordCloud[i].replaceAll(')', ' ');
         wordCloud[i] = wordCloud[i].replaceAll('/', ' ');
-        todasRespostas += `${' ' + wordCloud[i]}`;
+        wordCloud[i] = wordCloud[i].replaceAll(':', ' ');
+        todasRespostas += `${' ' + wordCloud[i].toLowerCase()}`;
     }
 
     // nesse trecho usamos o "split" do JS, para criar um vetor a partir do ' ' entre as palavras
@@ -205,72 +240,49 @@ function createWordCloud() {
 
     // esse for será para remover palavras que não serão utilizadas como por exemplo 'a', 'da', 'de'
     for (let i = 0; i < vetorRespostas.length; i++) {
-        if (vetorRespostas[i].trim() === '') {
-            vetorRespostas.splice(i, 1);
-        } else if (vetorRespostas[i].trim().toUpperCase() === 'E') {
-            vetorRespostas.splice(i, 1);
-        } else if (vetorRespostas[i].trim().toUpperCase() === 'DE') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'NA') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'QUE') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'É') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'EU') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'MEU') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'A') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'O') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'DA') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'DO') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'EM') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'UM') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'UMA') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'MINHA') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'POR') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'OS') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'AS') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'NAS') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'ME') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'NO') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'TAMBÉM') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'PRA') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'PARA') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'COMO') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'COM') {
-            vetorRespostas.splice(i, 1);
-        }else if (vetorRespostas[i].trim().toUpperCase() === 'MEUS') {
-            vetorRespostas.splice(i, 1);
+
+        const palavra = vetorRespostas[i].trim().toUpperCase();
+
+        // lista de palavras que serão removidas
+        switch (palavra) {
+            case 'E':
+            case 'DE':
+            case 'NA':
+            case 'QUE':
+            case 'É':
+            case 'EU':
+            case 'MEU':
+            case 'A':
+            case 'O':
+            case 'DA':
+            case 'DO':
+            case 'EM':
+            case 'UM':
+            case 'UMA':
+            case 'MINHA':
+            case 'POR':
+            case 'OS':
+            case 'AS':
+            case 'NAS':
+            case 'ME':
+            case 'NO':
+            case 'TAMBÉM':
+            case 'PRA':
+            case 'PARA':
+            case 'COMO':
+            case 'COM':
+            case 'MEUS':
+            case '':
+                vetorRespostas.splice(i, 1);
+                break;
+            default:
+                console.log('Palavra não encontrada --> ' + palavra);
         }
     }
 
-    let resultado = compararValoresGrafico(vetorRespostas)
+    let wordCloudResult = compararValoresGrafico(vetorRespostas)
 
-    createListCloud(resultado);
-
-}
-
-function createListCloud(wordCloudResult) {
+    console.log(wordCloudResult)
 
     let ulWordCloud = document.getElementById('word-cloud');
 
@@ -278,6 +290,7 @@ function createListCloud(wordCloudResult) {
 
     const wordCloudValues = Object.values(wordCloudResult); // recupera os valores, tipo 4,6,7
 
+    // faz a criação no HTML da nuvem de palavras
     for (let i = 0; i < wordCloudKeys.length; i++) {
         let li = document.createElement('li');
         li.innerHTML = `<a href="#" style="--size: ${wordCloudValues[i]};">${wordCloudKeys[i]}</a>`;
