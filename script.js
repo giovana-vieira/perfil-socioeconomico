@@ -57,8 +57,10 @@ let barColors = [
     "rgba(235, 0, 90, 0.8)"
 ];
 
+// vetor para armazenar os valores do grafico, com as propriedades 'title, 'xvalues' e 'yvalues'
 let listaResultado = [];
 
+// vetor para a nuvem de palavras
 let wordCloud = [];
 
 // faz a limpeza das variaveis globais e do HTML ao clicar no botão de "Enviar"
@@ -83,7 +85,7 @@ function clear() {
 // realiza a leitura do arquivo .csv atraves da biblioteca do papa.parse
 function uploadfile() {
 
-    clear();
+    clear(); // chama a função que faz a limpeza das variaveis
 
     Papa.parse(document.getElementById('uploadfile').files[0],
         {
@@ -91,7 +93,6 @@ function uploadfile() {
             header: true,
             skipEmptyLines: true,
             complete: function (results) {
-                console.log('Resultado do CSV', results)
                 readData(results)
             }
         }
@@ -102,8 +103,10 @@ function uploadfile() {
 // orgazina os dados para serem inseridos futuramente no grafico
 function readData(linhasCsv) {
 
+    // aqui realizamos a captura dos valores das 'colunas' do .csv e armazenamos em um vetor
     const colunasCsv = Object.keys(linhasCsv.data[0]);
 
+    // com o comando forEach passamos por cada item do 'colunasCsv' para criar a listaResultado
     colunasCsv.forEach((coluna) => {
         listaResultado.push(
             {
@@ -124,6 +127,10 @@ function readData(linhasCsv) {
         }
     });
 
+    // o forEach passa por cada item dentro da listaResultado, nesse bloco de código vamos montar os dados para nosso grafico
+    // cada item da listaResultado vamos fazer a seperação dos dados para o 'xvalues' e 'yvalues'. Por exemplo:
+    // xValues: ['ADS', 'DSM'] e yValues: [50, 22]
+    // no final temos 50 alunos de ADS e 22 alunos de DSM
     listaResultado.forEach((itemResultado) => {
         let valoresGrafico = compararValoresGrafico(itemResultado.xValues);
         itemResultado.xValues = Object.keys(valoresGrafico);
@@ -142,7 +149,8 @@ function removerItensListaResultado() {
     for (let i = 0; i < listaResultado.length; i++) {
         if (
             listaResultado[i].title.includes('Escreva algumas linhas sobre sua história e seus sonhos de vida') ||
-            listaResultado[i].title.includes('Carimbo')
+            listaResultado[i].title.includes('Carimbo de data/hora') ||
+            listaResultado[i].title.includes('Informe os 7 últimos dígitos do seu RA')
         ) {
             listaResultado.splice(i, 1);
         }
@@ -163,6 +171,11 @@ function createOptionsSelect() {
 
     let select = document.getElementById('idCharts');
 
+    let opt = document.createElement('option');
+    opt.value = null;
+    opt.innerHTML = 'Selecione uma opção';
+    select.appendChild(opt);
+
     for (let i = 0; i < listaResultado.length; i++) {
         let opt = document.createElement('option');
         opt.value = i;
@@ -181,6 +194,10 @@ function criarGrafico() {
 
     // recupera qual o 'value' selecionado na tela pelo 'select'
     let listaResultadoPosicao = document.getElementById('idCharts').value;
+
+    if (listaResultadoPosicao == null || listaResultadoPosicao == "null") {
+        return;
+    }
 
     // pega o valor da 'listaResultado' a partir da sua posição no vetor
     const dadosGrafico = listaResultado[listaResultadoPosicao];
@@ -231,6 +248,8 @@ function createWordCloud() {
         wordCloud[i] = wordCloud[i].replaceAll(')', ' ');
         wordCloud[i] = wordCloud[i].replaceAll('/', ' ');
         wordCloud[i] = wordCloud[i].replaceAll(':', ' ');
+        wordCloud[i] = wordCloud[i].replaceAll(';', ' ');
+        wordCloud[i] = wordCloud[i].replaceAll('!', ' ');
         todasRespostas += `${' ' + wordCloud[i].toLowerCase()}`;
     }
 
@@ -238,10 +257,18 @@ function createWordCloud() {
     // ja que no for acima deletamos os caracteres especiais
     let vetorRespostas = todasRespostas.split(' ');
 
-    // esse for será para remover palavras que não serão utilizadas como por exemplo 'a', 'da', 'de'
-    for (let i = 0; i < vetorRespostas.length; i++) {
+    let wordCloudResult = compararValoresGrafico(vetorRespostas);
 
-        const palavra = vetorRespostas[i].trim().toUpperCase();
+    let ulWordCloud = document.getElementById('word-cloud');
+
+    const wordCloudKeys = Object.keys(wordCloudResult); // recupera as chaves como por exemplo "Familia", "Curso" e outras palavras
+
+    const wordCloudValues = Object.values(wordCloudResult); // recupera os valores, tipo 4,6,7
+
+    // faz a criação no HTML da nuvem de palavras
+    for (let i = 0; i < wordCloudKeys.length; i++) {
+
+        const palavra = wordCloudKeys[i].trim().toUpperCase();
 
         // lista de palavras que serão removidas
         switch (palavra) {
@@ -272,26 +299,22 @@ function createWordCloud() {
             case 'COMO':
             case 'COM':
             case 'MEUS':
+            case 'DOS':
+            case 'LÁ':
+            case 'AO':
+            case 'SE':
+            case 'JÁ':
+            case 'JA':
+            case 'MAS':
+            case 'UMAS':
             case '':
-                vetorRespostas.splice(i, 1);
+                wordCloudKeys.splice(i, 1);
+                wordCloudValues.splice(i, 1);
                 break;
             default:
                 console.log('Palavra não encontrada --> ' + palavra);
         }
-    }
 
-    let wordCloudResult = compararValoresGrafico(vetorRespostas)
-
-    console.log(wordCloudResult)
-
-    let ulWordCloud = document.getElementById('word-cloud');
-
-    const wordCloudKeys = Object.keys(wordCloudResult); // recupera as chaves como por exemplo "Familia", "Curso" e outras palavras
-
-    const wordCloudValues = Object.values(wordCloudResult); // recupera os valores, tipo 4,6,7
-
-    // faz a criação no HTML da nuvem de palavras
-    for (let i = 0; i < wordCloudKeys.length; i++) {
         let li = document.createElement('li');
         li.innerHTML = `<a href="#" style="--size: ${wordCloudValues[i]};">${wordCloudKeys[i]}</a>`;
         ulWordCloud.appendChild(li);
